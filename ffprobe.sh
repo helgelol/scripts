@@ -1,4 +1,3 @@
-```
 #!/bin/bash
 IFS=$'\n'   
 
@@ -100,4 +99,3 @@ fi
 #    ffmpeg -n -i "$i" -c:v hevc_nvenc -hide_banner -preset fast -x265-params keyint=33:min-keyint=33 -crf 30 -b:v $desired -minrate $min -maxrate $max -bufsize 25M -c:a copy "$d/X265_$filename.mp4"
 # mv $i $d/Processed;
 done
-```
