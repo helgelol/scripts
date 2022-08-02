@@ -40,13 +40,13 @@ On_Red='\033[41m'         # Red
 
 
 VideoFiles=$(find ./ -maxdepth 10 -regex ".*\.\(mkv\|mp4\|wmv\|flv\|webm\|mov\|avi\|m4v\)")  
+re='^[0-9]+$'
 
 for i in $VideoFiles  
 do  
   filename=$(basename "$i");
   extension="${filename##*.}";
   filename="${filename%.*}";
-echo -e "${UGreen}############################################################################################################################################################################${Color_Off}\n";
 echo -e "${Color_Off}Getting info of ${BCyan}$i${Color_Off}";
 
     eval $(ffprobe -v quiet -show_format -of flat=s=_ -show_entries stream=height,width,nb_frames,duration,codec_name -sexagesimal "$i");
@@ -57,8 +57,7 @@ echo -e "${Color_Off}Getting info of ${BCyan}$i${Color_Off}";
     duration=${format_duration};
     #duration=$((durationSec/60));
     d=$(dirname "$i")
-echo -e "${Color_Off}Duration = ${URed}$duration ${Color_Off}, Height/Width = ${URed}$height/$width ${Color_Off} Bitrate =${URed} $bitrate${Color_Off}\n";
-echo -e "${UGreen}############################################################################################################################################################################${Color_Off}";
+echo -e "${Color_Off}Duration = ${URed}$duration ${Color_Off}, Height/Width = ${URed}$height/$width ${Color_Off} Bitrate =${URed} $bitrate${Color_Off}\n"
 #mkdir $d/Processed;
 
 if ((1<= $height &&  $height<=400))
@@ -87,7 +86,7 @@ then
     min="350k";
     max="2300k";
     echo -e "This is a ${UPurple}1080p${Color_Off} File\n";
-elif (($height=A && $height=N/A))
+elif ! [[ $height =~ $re ]]
 then
     echo -e "${UPurple}Unknown media height in ${Color_Off} File\n";
 else
@@ -98,4 +97,4 @@ else
 fi
 #    ffmpeg -n -i "$i" -c:v hevc_nvenc -hide_banner -preset fast -x265-params keyint=33:min-keyint=33 -crf 30 -b:v $desired -minrate $min -maxrate $max -bufsize 25M -c:a copy "$d/X265_$filename.mp4"
 # mv $i $d/Processed;
-done
+done  
